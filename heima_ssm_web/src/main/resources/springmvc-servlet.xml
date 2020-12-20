@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+
+
+    <!-- 开启注解扫描，springmvc-servlet.xml配置文件,只处理Controller层的内容,use-default-filters="false"和context:include-filter子标签一起使用，其意为：只扫描指定注解的类。 -->
+    <context:component-scan base-package="com.itheima.ssm.controller" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+<!--
+    <context:component-scan base-package="com.a.controller">
+    </context:component-scan>
+-->
+
+    <!-- 开启SpringMvc对注解的支持 -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+
+
+    <!-- 配置静态资源过滤   放行 -->
+
+
+
+
+    <!-- 设置静态资源不过滤 -->
+    <mvc:resources location="/css/" mapping="/css/**" />
+    <mvc:resources location="/img/" mapping="/img/**" />
+  <!--  <mvc:resources location="/js/" mapping="/js/**" />-->
+    <mvc:resources location="/plugins/" mapping="/plugins/**" />
+
+
+    <!-- 配置视图解析器  注意这里当web-inf 配置后接相应的文件夹-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- jsp文件所在的目录   也就是访问路劲 -->
+        <!--这里怎么写要遵循jsp在哪个地方 你的前缀才怎么写  这里就要创建jsp文件夹 里面放jsp页面-->
+        <property name="prefix" value="/pages/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+ <!--   <aop:aspectj-autoproxy proxy-target-class="true"/>-->
+
+</beans>

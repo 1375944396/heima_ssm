@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.ssm.dao.IRoleDao">
+    <!--查询全部订单-->
+    <select id="findAll"  resultType="Role">
+       select  * from ican.role
+
+    </select>
+
+    <insert id="save" parameterType="Role">
+        insert into ican.role (id, roleName, roleDesc)
+                                        values(#{id}, #{roleName},#{roleDesc})
+    </insert>
+
+
+    <select id="findById"  resultType="Role">
+        select  *  from ican.role where id = #{id}
+    </select>
+
+
+    <select id="findOtherPermissions" resultType="Permission">
+        select *  from ican.permission
+        where id
+        not in (select  permissionId  from ican.role_permission where roleId = #{roleId})
+
+
+    </select>
+
+
+    <insert id="addPermissionToRole">
+        insert  into ican.role_permission(permissionId, roleId)
+        values(#{permissionId}，#{roleId})
+    </insert>
+
+
+</mapper>

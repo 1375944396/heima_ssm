@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+    <settings>
+        <!-- 启用缓存 -->
+        <setting name="cacheEnabled" value="true" />
+        <!-- 启用主键策略 -->
+        <setting name="useGeneratedKeys" value="true" />
+
+        <!-- 下划线命名转驼峰命名的映射 -->
+        <!--是否开启自动驼峰命名规则（camel case）映射，即从经典数据库列名 A_COLUMN 到经典
+    Java 属性名 aColumn 的类似映射。 -->
+        <!--  采坑啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊 -->
+        <setting name="mapUnderscoreToCamelCase" value="false" />
+
+        <!-- 开启列名和属性名的自动映射 -->
+        <setting name="autoMappingBehavior" value="PARTIAL" />
+        <!-- 启用延迟加载（懒加载） -->
+        <setting name="lazyLoadingEnabled" value="true" />
+        <!-- 禁用积极的级联加载 -->
+        <setting name="aggressiveLazyLoading" value="false" />
+        <!-- 设置日志的实现为LOG4J2 -->
+        <setting name="logImpl" value="LOG4J2" />
+
+    </settings>
+
+
+
+    <typeAliases>
+        <package name="com.itheima.ssm.domain" /> <!--注意注意 别名里面什么都不设置会报错的一定要设置-->
+    </typeAliases>
+
+
+
+</configuration>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 开启注解扫描,spring-dao.xml配置文件只希望处理service和dao里面的内容, 不想去处理Controller里面的内容,Controller是springmvc去处理,context:exclude-filter直接使用，其意为不扫描指定注解标识的类，其他相关注解标识类全部扫描。-->
+   <context:component-scan base-package="com.itheima.ssm">
+        <!-- exclude排除Controller注解的扫描 -->
+       <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    <!--
+    开启注解扫描
+    -->
+ <!--   <context:component-scan base-package="com.a.service">
+    </context:component-scan>
+    <context:component-scan base-package="com.a.dao">
+    </context:component-scan>-->
+
+
+    <!-- 配置数据源 -->
+    <context:property-placeholder location="classpath:database.properties" file-encoding="UTF-8" />
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"></property>
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+        <property name="initialSize" value="${druid.initialSize}"></property>
+        <property name="maxActive" value="${druid.maxActive}"></property>
+        <property name="minIdle" value="${druid.minIdle}"></property>
+        <property name="maxWait" value="${druid.maxWait}"></property>
+        <property name="poolPreparedStatements" value="${druid.poolPreparedStatements}"></property>
+        <property name="maxOpenPreparedStatements" value="${druid.maxOpenPreparedStatements}"></property>
+        <property name="validationQuery" value="${druid.validationQuery}"></property>
+        <property name="testOnBorrow" value="${druid.testOnBorrow}"></property>
+        <property name="testOnReturn" value="${druid.testOnReturn}"></property>
+        <property name="testWhileIdle" value="${druid.testWhileIdle}"></property>
+        <property name="timeBetweenEvictionRunsMillis" value="${druid.timeBetweenEvictionRunsMillis}"></property>
+        <property name="minEvictableIdleTimeMillis" value="${druid.minEvictableIdleTimeMillis}"></property>
+    </bean>
+
+    <!-- 配置SqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <!-- 加载mybatis核心配置文件 -->
+
+        <!--指定mybatis全局配置文件的位置-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+        <!-- 当mybatis的xml文件和mapper接口不在相同包下时，需要用mapperLocations属性指定xml文件的路径。
+        *是个通配符，代表所有的文件，**代表所有目录下 -->
+
+        <!--指定mapper文件的位置-->
+        <!-- 自动扫描mapping.xml文件 -->
+       <!-- <property name="mapperLocations" value="classpath:mapper/*.xml" />-->
+  <!-- <property name="mapperLocations" value="classpath:com/a/dao/*.xml" ></property>-->
+        <!-- 传入PageHelper的插件 -->
+        <property name="plugins">
+            <array>
+                <!-- 传入插件的对象 -->
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <props>
+                            <!--helperDialect  :  分页插件会自动检测当前的数据库链接，自动选择合适的分页方式。-->
+                            <prop key="helperDialect">mysql</prop>
+                            <!--reasonable ：分页合理化参数，默认值为 false 。当该参数设置为 true 时， pageNum<=0 时会查询第一
+页， pageNum>pages （超过总数时），会查询最后一页。默认 false 时，直接根据参数进行查询。-->
+                            <prop key="reasonable">true</prop>
+                        </props>
+                    </property>
+                </bean>
+            </array>
+        </property>
+
+        <!-- 配置分页插件 -->
+<!--        <plugins>
+            <plugin interceptor="com.github.pagehelper.PageInterceptor">
+                <property name="helperDialect" value="mysql" />
+                <property name="reasonable" value="true" />
+            </plugin>
+        </plugins>-->
+    </bean>
+
+    <!-- 扫描自定义的Dao接口,相当于原来在mybatis-config.xml中配置的<mapper> <package name = "com.xxx"/> </mapper> -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.itheima.ssm.dao"></property>  												<!--这里只扫描dao，注意啊 -->
+        <!-- 注意 ： 有时 sqlSessionFactoryBeanName这个属性不设置也可以使用，可能它会自动到容器里面去找-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+    </bean>
+
+
+
+    <!-- 配置事务 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+
+    <!-- 配置事务使它支持注解 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+
+
+</beans>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.ssm.dao.IOrdersDao">
+    <!--查询全部订单-->
+    <select id="findAll" resultMap="od">
+        select a.*,p.productName,p.productPrice,m.`name`
+        from orders a,product p, member m
+        where a.productId = p.id
+          AND a.memberId = m.id
+
+    </select>
+    <!--查询结果集映射-->
+    <resultMap id="od" type="Orders">
+        <result property="id" column="id"/>
+        <result property="orderNum" column="orderNum"/>
+        <result property="orderTime" column="orderTime"/>
+        <result property="orderDesc" column="orderDesc"/>
+        <result property="peopleCount" column="peopleCount"/>
+        <result property="payType" column="payType"/>
+        <result property="orderStatus" column="orderStatus"/>
+        <!--产品结果映射，与订单得关系是1对1-->
+        <association property="product" javaType="Product">
+           <result property="id" column="id"/>
+            <result property="productNum" column="productNum" />
+            <result property="productName" column="productName"/>
+            <result property="cityName" column="cityName"/>
+            <result property="departureTime" column="departureTime"/>
+            <result property="productPrice" column="productPrice"/>
+            <result property="productDesc" column="productDesc"/>
+            <result property="productStatus" column="productStatus"/>
+        </association>
+
+        <!--会员结果映射，与订单得关系是1对1-->
+        <association property="member" javaType="Member">
+            <result property="id" column="id"/>
+            <result property="name" column="name"/>
+            <result property="nickname" column="nickName"/>
+            <result property="phoneNum" column="phoneNum"/>
+            <result property="email" column="email"/>
+        </association>
+        <!--成员得结果映射，与订单的关系是1对多.使用collection接受-->
+        <collection property="travellers" ofType="Traveller">
+            <result property="name" column="name"/>
+            <result property="sex" column="sex"/>
+            <result property="phoneNum" column="phoneNum"/>
+            <result property="credentialsType" column="credentialsType"/>
+            <result property="credentialsNum" column="credentialsNum"/>
+            <result property="travellerType" column="travellerType"/>
+        </collection>
+    </resultMap>
+
+    <!-- public  Orders findById(Integer ordersId) throws Exception;-->
+    <select id="findById" resultMap="od" parameterType="Integer">
+        select
+            oo.id ,
+            oo.orderNum ,
+            oo.orderTime ,
+            oo.peopleCount ,
+            oo.orderDesc ,
+            oo.payType ,
+            oo.orderStatus,
+            oo.productId ,
+            oo.memberId ,
+            mm.id ,
+            mm.NAME ,
+            mm.nickName,
+            mm.phoneNum ,
+            mm.email ,
+            tt.id ,
+            tt.sex ,
+            tt.NAME ,
+            tt.phoneNum ,
+            tt.credentialsType ,
+            tt.credentialsNum ,
+            tt.travellerType ,
+            pp.id ,
+            pp.productNum ,
+            pp.cityName ,
+            pp.productName ,
+            pp.DepartureTime ,
+            pp.productPrice ,
+            pp.productDesc ,
+            pp.productStatus
+        from   ican.orders oo,
+                    ican.traveller tt,
+                    ican. order_traveller  ot,
+                    ican.member mm,
+                    ican.product pp
+        where
+                    oo.id = ot.orderid
+        and
+                    tt.id = ot.travellerid
+        and
+                    oo.memberId = mm.id
+        and
+                    oo.productId = pp.id
+        and
+                    oo.id = #{id}
+    </select>
+
+
+
+</mapper>
+
+<!--
+<td>${orders.id }</td>
+<td>${orders.orderNum }</td>
+<td>${orders.product.productName }</td>
+<td>${orders.product.productPrice }</td>
+<td>${orders.orderTimeStr }</td>
+<td class="text-center">${orders.orderStatusStr }</td>-->
