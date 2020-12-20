@@ -1,7 +1,7 @@
 package com.itheima.ssm.domain;
 
 import java.util.List;
-
+//我的git
 //与数据库中users对应  用户信息
 public class UserInfo {
     private String id;

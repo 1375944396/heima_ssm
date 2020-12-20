@@ -1,5 +1,5 @@
 package com.itheima.ssm.domain;
-//旅客
+//旅客 git
 public class Traveller {
     private String id;
     private String name;
